@@ -1,10 +1,25 @@
 import { useState } from 'react';
 import reactLogo from './assets/react.svg';
+import usePWA from 'react-pwa-install-prompt';
 import './App.css';
 import './output.css';
 
 function App() {
   const [count, setCount] = useState(0);
+  const { isStandalone, isInstallPromptSupported, promptInstall } = usePWA();
+
+  const onClickInstall = async () => {
+    const didInstall = await promptInstall();
+    if (didInstall) {
+      // User accepted PWA install
+    }
+  };
+
+  const renderInstallButton = () => {
+    if (isInstallPromptSupported && isStandalone)
+      return <button onClick={onClickInstall}>Prompt PWA Install</button>;
+    return null;
+  };
 
   return (
     <div className="App">
@@ -31,6 +46,16 @@ function App() {
       <h1 className="text-3xl text-blue-600 font-bold underline">
         Hola Mundo!!!
       </h1>
+      <div>
+        <h2>PWA Infos</h2>
+        <p>
+          Is Install Prompt Supported ?{' '}
+          {isInstallPromptSupported ? 'true' : 'false'}
+        </p>
+        <p>Is Standalone ? {isStandalone ? 'true' : 'false'}</p>
+        {renderInstallButton()}
+      </div>
+      )
     </div>
   );
 }
